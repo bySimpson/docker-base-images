@@ -48,6 +48,10 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+      - id: lower-repo
+        name: Repository to lowercase
+        run: |
+          echo "owner=${GITHUB_REPOSITORY_OWNER@L}" >> $GITHUB_OUTPUT
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -55,4 +59,4 @@ jobs:
           file: ${{ matrix.paths }}
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/${{github.actor}}/base-${{ env.IMAGENAME }}:${{ matrix.version }}
+          tags: ghcr.io/${{steps.lower-repo.outputs.owner}}/base-${{ env.IMAGENAME }}:${{ matrix.version }}
