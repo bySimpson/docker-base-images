@@ -34,6 +34,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - id: lower-user
+        name: Repository to lowercase
+        run: |
+          echo "repository=${{github.actor}}" >> $GITHUB_OUTPUT
       - name: Free disk space
         run: chmod +x ./scripts/cleanup.sh && ./scripts/cleanup.sh
       - name: Check disk space
@@ -55,4 +59,4 @@ jobs:
           file: ${{ matrix.paths }}
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/${{github.actor}}/base-${{ env.IMAGENAME }}:${{ matrix.version }}
+          tags: ghcr.io/${{ steps.lower-user.outputs.repository }}/base-${{ env.IMAGENAME }}:${{ matrix.version }}
